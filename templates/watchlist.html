@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}My Watchlist - StockVision AI{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 900px;">
+    <div class="glass-card p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <h2 class="text-white outfit-font mb-0"><i class="fa-solid fa-heart text-danger me-2"></i> Watchlist Manager</h2>
+            <p class="text-muted small mb-0">Track live prices and initiate model forecasts for your saved symbols.</p>
+        </div>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-custom"><i class="fa-solid fa-arrow-left me-2"></i> Back to Dashboard</a>
+    </div>
+
+    {% if watchlist %}
+        <div class="row g-3">
+            {% for item in watchlist %}
+                <div class="col-md-6">
+                    <div class="glass-card p-4 h-100 hover-scale">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h4 class="text-white outfit-font mb-0 font-monospace">{{ item.symbol }}</h4>
+                                <small class="text-muted text-truncate d-inline-block" style="max-width: 200px;">{{ item.name }}</small>
+                            </div>
+                            
+                            <form action="{{ url_for('main.remove_watchlist', ticker=item.symbol) }}" method="POST">
+                                <button type="submit" class="btn btn-link text-danger p-0 border-0" title="Remove from Watchlist">
+                                    <i class="fa-solid fa-heart-crack fs-5"></i>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-baseline mb-3">
+                            <span class="text-muted small">Current Price:</span>
+                            <span class="h4 text-white outfit-font">${{ item.price }}</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-baseline mb-4">
+                            <span class="text-muted small">Change:</span>
+                            <span class="fw-semibold {% if item.change > 0 %}trend-up{% else %}trend-down{% endif %}">
+                                {% if item.change > 0 %}+{% endif %}{{ item.change }} ({% if item.change > 0 %}+{% endif %}{{ item.pct_change }}%)
+                            </span>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('main.search', symbol=item.symbol) }}" class="btn btn-sm btn-outline-custom w-100 py-2">Details</a>
+                            <a href="{{ url_for('main.predict', ticker=item.symbol) }}" class="btn btn-sm btn-primary-custom w-100 py-2">Forecast</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="glass-card p-5 text-center my-5">
+            <i class="fa-solid fa-heart-circle-xmark text-muted fs-1 mb-3"></i>
+            <h4 class="text-white outfit-font mb-2">No stocks saved yet</h4>
+            <p class="text-muted mb-4">Quickly save stock prices to track changes on your dashboard.</p>
+            
+            <div class="mx-auto" style="max-width: 400px;">
+                <form action="{{ url_for('main.search') }}" method="GET">
+                    <div class="input-group">
+                        <input type="text" name="symbol" class="form-control form-control-custom" placeholder="Search ticker e.g., AAPL" required>
+                        <button type="submit" class="btn btn-primary-custom px-3">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

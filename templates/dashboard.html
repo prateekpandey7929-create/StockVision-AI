@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - StockVision AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Section & Search Box -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-3 mb-lg-0">
+            <div class="glass-card p-4 h-100 d-flex flex-column justify-content-center">
+                <h2 class="text-white outfit-font mb-2">Welcome Back, {{ current_user.full_name }}!</h2>
+                <p class="text-muted mb-0 small">
+                    Use our AI-powered forecasting platform to predict stock closures and track your favorite symbols.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="glass-card p-4 h-100 d-flex flex-column justify-content-center">
+                <h5 class="text-white outfit-font mb-3"><i class="fa-solid fa-search text-primary me-2"></i> Analyze New Stock</h5>
+                <form action="{{ url_for('main.search') }}" method="GET">
+                    <div class="input-group">
+                        <input type="text" name="symbol" class="form-control form-control-custom" placeholder="e.g. TSLA, AAPL, RELIANCE.NS" required>
+                        <button type="submit" class="btn btn-primary-custom px-3"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Index Summary -->
+    <h5 class="text-white outfit-font mb-3"><i class="fa-solid fa-earth-americas text-primary me-2"></i> Global Market Summary</h5>
+    <div class="row g-3 mb-4">
+        {% for name, info in market_data.items() %}
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-3 summary-card {% if info.change > 0 %}teal-edge{% elif info.change < 0 %}red-edge{% endif %}">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-muted small outfit-font">{{ name }}</span>
+                        <span class="small font-monospace text-dimmed">{{ info.symbol }}</span>
+                    </div>
+                    <div class="d-flex align-items-baseline gap-2">
+                        <span class="h4 text-white outfit-font mb-0">
+                            {% if info.price is number %}
+                                ${{ info.price }}
+                            {% else %}
+                                {{ info.price }}
+                            {% endif %}
+                        </span>
+                        {% if info.change is number and info.change != 0.0 %}
+                            <span class="small {% if info.change > 0 %}trend-up{% else %}trend-down{% endif %} fw-semibold">
+                                {% if info.change > 0 %}+{% endif %}{{ info.pct_change }}%
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="row">
+        <!-- Watchlist Sidebar (Left 4 columns) -->
+        <div class="col-lg-4 mb-4">
+            <div class="glass-card p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="text-white outfit-font mb-0"><i class="fa-solid fa-heart text-danger me-2"></i> My Watchlist</h5>
+                    <a href="{{ url_for('main.watchlist') }}" class="btn btn-sm btn-outline-custom text-decoration-none">Manage</a>
+                </div>
+                
+                {% if watchlist %}
+                    <div class="d-flex flex-column gap-3">
+                        {% for item in watchlist %}
+                            <div class="p-3 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-30 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="{{ url_for('main.search', symbol=item.symbol) }}" class="h6 text-white text-decoration-none outfit-font d-block mb-0">{{ item.symbol }}</a>
+                                    <small class="text-muted">Live Price</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="d-block text-white outfit-font">${{ item.price }}</span>
+                                    <span class="small {% if item.change > 0 %}trend-up{% else %}trend-down{% endif %}">
+                                        {% if item.change > 0 %}+{% endif %}{{ item.pct_change }}%
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fa-solid fa-folder-open text-muted fs-2 mb-3"></i>
+                        <p class="text-muted small">Your watchlist is empty.</p>
+                        <p class="text-dimmed small mb-0">Search a stock and click "Add to Watchlist" to track prices here.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Predictions Table (Right 8 columns) -->
+        <div class="col-lg-8 mb-4">
+            <div class="glass-card p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="text-white outfit-font mb-0"><i class="fa-solid fa-history text-primary me-2"></i> Recent Forecasts</h5>
+                    <a href="{{ url_for('main.history') }}" class="btn btn-sm btn-outline-custom text-decoration-none">View History</a>
+                </div>
+                
+                {% if recent_predictions %}
+                    <div class="table-responsive">
+                        <table class="table table-custom align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Stock</th>
+                                    <th>Date</th>
+                                    <th>Current</th>
+                                    <th>Forecasted</th>
+                                    <th>Signal</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pred in recent_predictions %}
+                                    <tr>
+                                        <td>
+                                            <strong class="text-white outfit-font">{{ pred.stock_symbol }}</strong>
+                                        </td>
+                                        <td class="small text-muted">{{ pred.prediction_date.strftime('%Y-%m-%d') }}</td>
+                                        <td>${{ pred.current_price }}</td>
+                                        <td>${{ pred.predicted_price }}</td>
+                                        <td>
+                                            {% if pred.signal == 'Bullish' %}
+                                                <span class="badge-bullish"><i class="fa-solid fa-arrow-trend-up me-1"></i> Bullish</span>
+                                            {% else %}
+                                                <span class="badge-bearish"><i class="fa-solid fa-arrow-trend-down me-1"></i> Bearish</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('main.predict', ticker=pred.stock_symbol) }}" class="btn btn-sm btn-primary-custom py-1 px-3">Details</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fa-solid fa-brain text-muted fs-2 mb-3"></i>
+                        <p class="text-muted small">No predictions made yet.</p>
+                        <a href="#trending" class="btn btn-sm btn-primary-custom">Choose a Stock below</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Trending Stocks Section -->
+    <div id="trending" class="glass-card p-4 mb-4">
+        <h5 class="text-white outfit-font mb-3"><i class="fa-solid fa-fire text-warning me-2"></i> Trending Stocks</h5>
+        <p class="text-muted small mb-4">Quick access to the most active ticker symbols on our platform. Select a pill below to view current statistics and make predictions.</p>
+        <div class="d-flex flex-wrap gap-3">
+            {% for stock in trending_stocks %}
+                <a href="{{ url_for('main.search', symbol=stock.symbol) }}" class="trending-pill d-flex align-items-center gap-2">
+                    <strong class="text-white font-monospace">{{ stock.symbol }}</strong>
+                    {% if stock.price != 'View Info' and stock.price != 'N/A' %}
+                        <span class="small font-monospace text-muted border-start border-secondary ps-2">${{ stock.price }}</span>
+                    {% else %}
+                        <span class="small text-dimmed border-start border-secondary ps-2"><i class="fa-solid fa-chart-line"></i></span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

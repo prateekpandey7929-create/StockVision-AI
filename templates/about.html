@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}About StockVision AI - AI Stock Forecast Platform{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 900px;">
+    <!-- Title Card -->
+    <div class="glass-card p-4 mb-4">
+        <h2 class="text-white outfit-font mb-2"><i class="fa-solid fa-circle-info text-primary me-2"></i> About StockVision AI</h2>
+        <p class="text-muted small mb-0">Learn about our technical architecture, predictive indicators, and scikit-learn fitting mechanics.</p>
+    </div>
+
+    <!-- The Platform Card -->
+    <div class="glass-card p-4 mb-4">
+        <h4 class="text-white outfit-font mb-3"><i class="fa-solid fa-chart-line-up fa-chart-line text-primary me-2"></i> Platform Overview</h4>
+        <p class="text-muted">
+            StockVision AI is a production-ready web platform that aggregates financial statistics using public Yahoo Finance APIs and generates closing price estimates using standard supervised machine learning.
+        </p>
+        <p class="text-muted">
+            Many financial research portals offer charts, but evaluating algorithmic predictions requires structured testing. StockVision AI addresses this by providing on-demand model training, real-time error indicators (R², MAE, RMSE), and direct comparisons against simple linear baselines.
+        </p>
+    </div>
+
+    <!-- ML Pipeline Details -->
+    <div class="glass-card p-4 mb-4">
+        <h4 class="text-white outfit-font mb-4"><i class="fa-solid fa-brain text-primary me-2"></i> Machine Learning Pipeline</h4>
+        
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="p-3 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-30 h-100">
+                    <h5 class="text-white outfit-font mb-2 text-gradient-primary">Random Forest Regressor</h5>
+                    <p class="text-muted small mb-0">
+                        Our primary forecast engine. This ensemble learning model fits 150 decision trees on random sub-samples (bagging) and averages predictions to control overfitting. Features are randomly split at each node, creating a robust predictor for complex historical patterns.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="p-3 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-30 h-100">
+                    <h5 class="text-white outfit-font mb-2 text-gradient-primary">Linear Regression Baseline</h5>
+                    <p class="text-muted small mb-0">
+                        A secondary model that serves as our control benchmark. It solves a ordinary least squares linear equation to map inputs to target values. If the Random Forest $R^2$ score is not higher than the Linear Regression model, it suggests the stock is following a simple linear trend.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="text-white outfit-font mt-4 mb-3">Technical Feature Engineering</h5>
+        <p class="text-muted small">
+            To predict the next day's close ($Close_{t+1}$), we engineer several input features computed from historical trading session variables ($Open_t$, $High_t$, $Low_t$, $Close_t$, $Volume_t$):
+        </p>
+        <ul class="list-unstyled text-muted small ps-2">
+            <li class="mb-2"><i class="fa-solid fa-chevron-right text-primary me-2"></i> <strong>Lags 1, 2, and 3:</strong> Includes prior session closing prices to capture short-term momentum.</li>
+            <li class="mb-2"><i class="fa-solid fa-chevron-right text-primary me-2"></i> <strong>Moving Averages (SMA 5, 10, 20):</strong> Smoothes out short-term fluctuations to highlight trend support levels.</li>
+            <li class="mb-2"><i class="fa-solid fa-chevron-right text-primary me-2"></i> <strong>HL Spread:</strong> The difference between high and low prices ($High - Low$) tracks daily volatility.</li>
+            <li class="mb-2"><i class="fa-solid fa-chevron-right text-primary me-2"></i> <strong>Rolling Volatility:</strong> Standard deviation of daily returns computed over a 5-day sliding window.</li>
+        </ul>
+    </div>
+
+    <!-- Technology Stack -->
+    <div class="glass-card p-4">
+        <h4 class="text-white outfit-font mb-3"><i class="fa-solid fa-code text-primary me-2"></i> Technology Stack</h4>
+        <div class="row text-center g-3 mt-1">
+            <div class="col-4 col-md-2">
+                <span class="d-block p-2 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-20 text-white font-monospace small">Python</span>
+            </div>
+            <div class="col-4 col-md-2">
+                <span class="d-block p-2 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-20 text-white font-monospace small">Flask</span>
+            </div>
+            <div class="col-4 col-md-2">
+                <span class="d-block p-2 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-20 text-white font-monospace small">SQLAlchemy</span>
+            </div>
+            <div class="col-4 col-md-2">
+                <span class="d-block p-2 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-20 text-white font-monospace small">SQLite</span>
+            </div>
+            <div class="col-4 col-md-2">
+                <span class="d-block p-2 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-20 text-white font-monospace small">Scikit-learn</span>
+            </div>
+            <div class="col-4 col-md-2">
+                <span class="d-block p-2 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-20 text-white font-monospace small">Chart.js</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ stock.symbol }} - Stock Analytics & Forecasting - StockVision AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Stock Header -->
+    <div class="glass-card p-4 mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <span class="badge bg-primary bg-opacity-25 text-primary rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 3.5rem; height: 3.5rem;">
+                    <i class="fa-solid fa-chart-line fs-3"></i>
+                </span>
+                <div>
+                    <h2 class="text-white outfit-font mb-0">{{ stock.name }}</h2>
+                    <span class="font-monospace text-muted fs-5">{{ stock.symbol }}</span>
+                </div>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end">
+                    <small class="text-muted d-block mb-1 text-uppercase tracking-wider">Current Price</small>
+                    <span class="h3 text-white outfit-font">${{ stock.price }}</span>
+                </div>
+                
+                {% if stock.in_watchlist %}
+                    <form action="{{ url_for('main.remove_watchlist', ticker=stock.symbol) }}" method="POST">
+                        <button type="submit" class="btn btn-outline-danger px-4 py-2"><i class="fa-solid fa-heart-crack me-2"></i> Remove Watchlist</button>
+                    </form>
+                {% else %}
+                    <form action="{{ url_for('main.add_watchlist', ticker=stock.symbol) }}" method="POST">
+                        <button type="submit" class="btn btn-outline-success px-4 py-2"><i class="fa-solid fa-heart me-2"></i> Add Watchlist</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Prediction Results Display (Conditional) -->
+    {% if show_prediction %}
+        <div class="glass-card p-4 mb-4" style="border-color: rgba(99, 102, 241, 0.4);">
+            <div class="d-flex align-items-center gap-2 mb-4 border-bottom border-secondary pb-3">
+                <i class="fa-solid fa-wand-magic-sparkles text-primary fs-4"></i>
+                <h4 class="text-white mb-0 outfit-font">AI Prediction Result</h4>
+                {% if prediction.retrained %}
+                    <span class="badge bg-info bg-opacity-25 text-info ms-2"><i class="fa-solid fa-arrows-rotate me-1"></i> Retrained Live</span>
+                {% endif %}
+            </div>
+            
+            <div class="row g-3">
+                <!-- Forecast Price -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="p-3 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-30 h-100">
+                        <small class="text-muted d-block mb-1 text-uppercase tracking-wider">Next-Day Price</small>
+                        <span class="h3 text-white outfit-font">${{ prediction.predicted_price }}</span>
+                    </div>
+                </div>
+                
+                <!-- Expected Change % -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="p-3 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-30 h-100">
+                        <small class="text-muted d-block mb-1 text-uppercase tracking-wider">Expected Change</small>
+                        <span class="h3 outfit-font {% if prediction.expected_change_pct > 0 %}text-success{% else %}text-danger{% endif %}">
+                            {% if prediction.expected_change_pct > 0 %}+{% endif %}{{ prediction.expected_change_pct }}%
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Signal -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="p-3 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-30 h-100">
+                        <small class="text-muted d-block mb-1 text-uppercase tracking-wider">Trading Signal</small>
+                        {% if prediction.signal == 'Bullish' %}
+                            <span class="badge-bullish fs-5 d-inline-block mt-1"><i class="fa-solid fa-arrow-trend-up me-2"></i> Bullish</span>
+                        {% else %}
+                            <span class="badge-bearish fs-5 d-inline-block mt-1"><i class="fa-solid fa-arrow-trend-down me-2"></i> Bearish</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Confidence -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="p-3 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-30 h-100">
+                        <small class="text-muted d-block mb-1 text-uppercase tracking-wider">Confidence Score</small>
+                        <span class="h3 text-primary outfit-font">{{ prediction.confidence_score }}%</span>
+                        <div class="progress mt-2 bg-dark" style="height: 6px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ prediction.confidence_score }}%" aria-valuenow="{{ prediction.confidence_score }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4 pt-3 border-top border-secondary border-opacity-30 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span class="small text-muted"><i class="fa-solid fa-calendar me-2"></i>Target Forecasting Date: <strong>{{ prediction.prediction_date }}</strong></span>
+                <span class="small text-muted"><i class="fa-solid fa-clock me-2"></i>Model Last Trained: <strong>{{ prediction.last_trained }}</strong></span>
+            </div>
+        </div>
+    {% else %}
+        <!-- Stock Details Stats -->
+        <div class="row g-3 mb-4">
+            <!-- Open -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="glass-card p-3 text-center">
+                    <small class="text-muted d-block mb-1">Open</small>
+                    <span class="h5 text-white font-monospace">${{ stock.open }}</span>
+                </div>
+            </div>
+            <!-- High -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="glass-card p-3 text-center">
+                    <small class="text-muted d-block mb-1">High</small>
+                    <span class="h5 text-white font-monospace text-success">${{ stock.high }}</span>
+                </div>
+            </div>
+            <!-- Low -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="glass-card p-3 text-center">
+                    <small class="text-muted d-block mb-1">Low</small>
+                    <span class="h5 text-white font-monospace text-danger">${{ stock.low }}</span>
+                </div>
+            </div>
+            <!-- Volume -->
+            <div class="col-6 col-md-6 col-lg-3">
+                <div class="glass-card p-3 text-center">
+                    <small class="text-muted d-block mb-1">Volume</small>
+                    <span class="h5 text-white font-monospace">{{ stock.volume }}</span>
+                </div>
+            </div>
+            <!-- Market Cap -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="glass-card p-3 text-center">
+                    <small class="text-muted d-block mb-1">Market Capitalization</small>
+                    <span class="h5 text-white font-monospace">{{ stock.market_cap }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Predict CTA Banner -->
+        <div class="glass-card p-4 mb-4 text-center border-primary border-opacity-30 bg-primary bg-opacity-10">
+            <h4 class="text-white outfit-font mb-2">Run AI Predictive Model</h4>
+            <p class="text-muted small mb-4">Fit a Random Forest Regressor on the last 2 years of daily trading sessions to forecast tomorrow's close price.</p>
+            <a href="{{ url_for('main.predict', ticker=stock.symbol) }}" class="btn btn-primary-custom px-5 py-3 fs-6"><i class="fa-solid fa-brain me-2"></i> Forecast Next Day Price</a>
+        </div>
+    {% endif %}
+
+    <!-- Charts & Analytics Tabs -->
+    <div class="glass-card p-4">
+        <ul class="nav nav-tabs nav-tabs-custom mb-4" id="analyticsTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="historical-tab" data-bs-toggle="tab" data-bs-target="#historical" type="button" role="tab" aria-controls="historical" aria-selected="true">
+                    <i class="fa-solid fa-chart-line me-2"></i> Historical Price Chart
+                </button>
+            </li>
+            {% if show_prediction %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="model-tab" data-bs-toggle="tab" data-bs-target="#model" type="button" role="tab" aria-controls="model" aria-selected="false">
+                        <i class="fa-solid fa-chart-area me-2"></i> Model Performance (Actual vs Predicted)
+                    </button>
+                </li>
+            {% endif %}
+        </ul>
+        
+        <div class="tab-content" id="analyticsTabsContent">
+            <!-- Historical Price Chart Tab -->
+            <div class="tab-pane fade show active" id="historical" role="tabpanel" aria-labelledby="historical-tab">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <h5 class="text-white outfit-font mb-0">Closing Price History</h5>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary-custom active period-btn py-1 px-3" data-period="1m">1M</button>
+                        <button type="button" class="btn btn-outline-custom period-btn py-1 px-3" data-period="3m">3M</button>
+                        <button type="button" class="btn btn-outline-custom period-btn py-1 px-3" data-period="6m">6M</button>
+                        <button type="button" class="btn btn-outline-custom period-btn py-1 px-3" data-period="1y">1Y</button>
+                        <button type="button" class="btn btn-outline-custom period-btn py-1 px-3" data-period="5y">5Y</button>
+                    </div>
+                </div>
+                
+                <div class="position-relative" style="height: 400px;">
+                    <!-- Loading Spinner -->
+                    <div id="chartSpinner" class="position-absolute top-50 start-50 translate-middle text-center" style="display: none;">
+                        <div class="spinner-border spinner-custom mb-2" role="status"></div>
+                        <div class="text-muted small">Fetching data...</div>
+                    </div>
+                    <div id="chartError" class="position-absolute top-50 start-50 translate-middle text-danger small" style="display: none;"></div>
+                    <canvas id="historicalStockChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Model Performance Tab (Conditional) -->
+            {% if show_prediction %}
+                <div class="tab-pane fade" id="model" role="tabpanel" aria-labelledby="model-tab">
+                    <div class="row mb-4">
+                        <div class="col-lg-8">
+                            <h5 class="text-white outfit-font mb-3">Model Accuracy Chart (Test Set Valuation)</h5>
+                            <div class="position-relative" style="height: 320px;">
+                                <canvas id="modelPerformanceChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <h5 class="text-white outfit-font mb-3">Accuracy Indicators</h5>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-custom table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Metric</th>
+                                            <th class="text-end">Random Forest</th>
+                                            <th class="text-end">Linear Reg</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong class="text-white small">R² (R-Squared)</strong></td>
+                                            <td class="text-end text-success font-monospace small">{{ prediction.metrics.rf.r2|round(4) }}</td>
+                                            <td class="text-end text-muted font-monospace small">{{ prediction.metrics.lr.r2|round(4) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong class="text-white small">MAE (Mean Abs Error)</strong></td>
+                                            <td class="text-end text-primary font-monospace small">${{ prediction.metrics.rf.mae|round(2) }}</td>
+                                            <td class="text-end text-muted font-monospace small">${{ prediction.metrics.lr.mae|round(2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong class="text-white small">RMSE (Root MSE)</strong></td>
+                                            <td class="text-end text-primary font-monospace small">${{ prediction.metrics.rf.rmse|round(2) }}</td>
+                                            <td class="text-end text-muted font-monospace small">${{ prediction.metrics.lr.rmse|round(2) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="bg-dark bg-opacity-40 p-3 rounded border border-secondary border-opacity-30 mt-3 small text-muted">
+                                <i class="fa-solid fa-circle-info text-primary me-2"></i>
+                                <strong>R² Score:</strong> Closer to 1 is better. Indicates the proportion of variance in closing prices explained by our technical features.
+                            </div>
+                            
+                            <!-- Retrain Actions -->
+                            <div class="text-center mt-4 pt-2">
+                                <form action="{{ url_for('main.predict', ticker=stock.symbol) }}" method="GET">
+                                    <input type="hidden" name="retrain" value="true">
+                                    <button type="submit" class="btn btn-outline-custom w-100"><i class="fa-solid fa-arrows-rotate me-2"></i> Retrain Model Now</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize the main historical price chart
+        initHistoricalChart("{{ stock.symbol }}", "1m");
+        
+        // Initialize the actual vs predicted validation chart if evaluation details are present
+        {% if show_prediction %}
+            const evalData = {{ prediction.test_evaluation|tojson | safe }};
+            initModelPerformanceChart(evalData);
+        {% endif %}
+    });
+</script>
+{% endblock %}

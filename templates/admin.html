@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Panel - StockVision AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="glass-card p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <h2 class="text-white outfit-font mb-0"><i class="fa-solid fa-user-shield text-warning me-2"></i> Admin Control Dashboard</h2>
+            <p class="text-muted small mb-0">System status overview, active user records, and customer feedback messages.</p>
+        </div>
+        <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50 px-3 py-2 rounded-pill outfit-font">
+            <i class="fa-solid fa-lock me-1"></i> Authorized Personnel Only
+        </span>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-3 mb-4">
+        <!-- Users -->
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card p-3 summary-card">
+                <span class="text-muted small outfit-font">Total Registered Users</span>
+                <div class="d-flex align-items-baseline gap-2 mt-1">
+                    <span class="h3 text-white outfit-font mb-0">{{ user_count }}</span>
+                    <span class="small text-muted"><i class="fa-solid fa-users text-primary"></i></span>
+                </div>
+            </div>
+        </div>
+        <!-- Predictions -->
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card p-3 summary-card teal-edge">
+                <span class="text-muted small outfit-font">System Forecasts Run</span>
+                <div class="d-flex align-items-baseline gap-2 mt-1">
+                    <span class="h3 text-white outfit-font mb-0">{{ prediction_count }}</span>
+                    <span class="small text-muted"><i class="fa-solid fa-brain text-success"></i></span>
+                </div>
+            </div>
+        </div>
+        <!-- Messages -->
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card p-3 summary-card red-edge">
+                <span class="text-muted small outfit-font">Customer Messages</span>
+                <div class="d-flex align-items-baseline gap-2 mt-1">
+                    <span class="h3 text-white outfit-font mb-0">{{ message_count }}</span>
+                    <span class="small text-muted"><i class="fa-solid fa-envelope-open-text text-danger"></i></span>
+                </div>
+            </div>
+        </div>
+        <!-- Watchlist count -->
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card p-3 summary-card">
+                <span class="text-muted small outfit-font">Watchlist Maps Active</span>
+                <div class="d-flex align-items-baseline gap-2 mt-1">
+                    <span class="h3 text-white outfit-font mb-0">{{ watchlist_count }}</span>
+                    <span class="small text-muted"><i class="fa-solid fa-heart text-warning"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tables & Moderation Tabs -->
+    <div class="glass-card p-4">
+        <ul class="nav nav-tabs nav-tabs-custom mb-4" id="adminTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab" aria-controls="users" aria-selected="true">
+                    <i class="fa-solid fa-users-gear me-2"></i> Users Management
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="predictions-tab" data-bs-toggle="tab" data-bs-target="#predictions" type="button" role="tab" aria-controls="predictions" aria-selected="false">
+                    <i class="fa-solid fa-list-check me-2"></i> Forecast Auditing
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">
+                    <i class="fa-solid fa-comments me-2"></i> Feedback Inbox
+                </button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="adminTabsContent">
+            <!-- Users Tab -->
+            <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
+                <div class="table-responsive">
+                    <table class="table table-custom align-middle">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email Address</th>
+                                <th>Join Date</th>
+                                <th>Account Role</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in users %}
+                                <tr>
+                                    <td><strong class="text-white outfit-font">{{ u.full_name }}</strong></td>
+                                    <td class="font-monospace text-muted">{{ u.email }}</td>
+                                    <td class="small text-muted">{{ u.join_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        {% if u.is_admin %}
+                                            <span class="badge bg-warning text-dark font-monospace fw-semibold"><i class="fa-solid fa-user-shield me-1"></i> Admin</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary font-monospace fw-semibold"><i class="fa-solid fa-user me-1"></i> User</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if u.id != current_user.id %}
+                                            <form action="{{ url_for('admin.toggle_user_admin', user_id=u.id) }}" method="POST" class="d-inline">
+                                                <button type="submit" class="btn btn-sm {% if u.is_admin %}btn-outline-danger{% else %}btn-outline-warning{% endif %}">
+                                                    {% if u.is_admin %}Demote{% else %}Promote Admin{% endif %}
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <span class="text-dimmed small italic">Self account</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Predictions Tab -->
+            <div class="tab-pane fade" id="predictions" role="tabpanel" aria-labelledby="predictions-tab">
+                <div class="table-responsive">
+                    <table class="table table-custom align-middle">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Stock</th>
+                                <th>Forecast Date</th>
+                                <th>Current Close</th>
+                                <th>AI Predicted</th>
+                                <th>Signal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if predictions %}
+                                {% for p in predictions %}
+                                    <tr>
+                                        <td>
+                                            <span class="text-white small outfit-font">{{ p.user.full_name }}</span>
+                                            <small class="d-block text-muted font-monospace">{{ p.user.email }}</small>
+                                        </td>
+                                        <td><strong class="text-white font-monospace">{{ p.stock_symbol }}</strong></td>
+                                        <td class="small text-muted">{{ p.prediction_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>${{ p.current_price }}</td>
+                                        <td>${{ p.predicted_price }}</td>
+                                        <td>
+                                            {% if p.signal == 'Bullish' %}
+                                                <span class="badge-bullish"><i class="fa-solid fa-arrow-trend-up me-1"></i> Bullish</span>
+                                            {% else %}
+                                                <span class="badge-bearish"><i class="fa-solid fa-arrow-trend-down me-1"></i> Bearish</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">No prediction history records logged in system database.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Messages Tab -->
+            <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+                {% if messages %}
+                    <div class="d-flex flex-column gap-3">
+                        {% for m in messages %}
+                            <div class="p-4 rounded border {% if m.is_read %}border-secondary border-opacity-20 bg-dark bg-opacity-20{% else %}border-primary border-opacity-40 bg-dark bg-opacity-40{% endif %}">
+                                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                                    <div>
+                                        <h5 class="text-white outfit-font mb-1">{{ m.subject }}</h5>
+                                        <span class="small text-muted">From: <strong>{{ m.name }}</strong> ({{ m.email }})</span>
+                                        <small class="d-block text-dimmed mt-1"><i class="fa-solid fa-clock me-1"></i> Received: {{ m.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                    </div>
+                                    
+                                    <div class="d-flex gap-2">
+                                        {% if not m.is_read %}
+                                            <form action="{{ url_for('admin.mark_message_read', msg_id=m.id) }}" method="POST">
+                                                <button type="submit" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-check me-1"></i> Mark Read</button>
+                                            </form>
+                                        {% else %}
+                                            <span class="badge bg-secondary py-2 px-3 font-monospace">Read</span>
+                                        {% endif %}
+                                        
+                                        <form action="{{ url_for('admin.delete_message', msg_id=m.id) }}" method="POST">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash me-1"></i> Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <hr class="border-secondary border-opacity-30 my-2">
+                                <p class="text-muted mb-0 font-monospace small" style="white-space: pre-line;">{{ m.message }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-envelope-open text-dimmed fs-2 mb-3"></i>
+                        <p class="mb-0">Inbox is empty. No contact messages received.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

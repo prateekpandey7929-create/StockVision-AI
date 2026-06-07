@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - StockVision AI{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 900px;">
+    <!-- Profile Header -->
+    <div class="glass-card p-4 mb-4 d-flex align-items-center gap-3">
+        <span class="badge bg-primary bg-opacity-25 text-primary rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 4rem; height: 4rem;">
+            <i class="fa-solid fa-user-gear fs-3"></i>
+        </span>
+        <div>
+            <h2 class="text-white outfit-font mb-0">{{ current_user.full_name }}</h2>
+            <small class="text-muted"><i class="fa-solid fa-calendar-alt me-2"></i>Member since {{ current_user.join_date.strftime('%B %Y') }}</small>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Update details Form (Left) -->
+        <div class="col-md-6 mb-4">
+            <div class="glass-card p-4 h-100">
+                <h4 class="text-white outfit-font mb-4 border-bottom border-secondary pb-2">
+                    <i class="fa-solid fa-id-card text-primary me-2"></i> Update Details
+                </h4>
+                
+                <form action="{{ url_for('auth.profile') }}" method="POST">
+                    <input type="hidden" name="action" value="update_profile">
+                    
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label text-muted small">Full Name</label>
+                        <input type="text" id="full_name" name="full_name" class="form-control form-control-custom" value="{{ current_user.full_name }}" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="email" class="form-label text-muted small">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control form-control-custom" value="{{ current_user.email }}" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary-custom w-100 py-3">Save Profile Changes</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Change Password Form (Right) -->
+        <div class="col-md-6 mb-4">
+            <div class="glass-card p-4 h-100">
+                <h4 class="text-white outfit-font mb-4 border-bottom border-secondary pb-2">
+                    <i class="fa-solid fa-shield-halved text-primary me-2"></i> Change Password
+                </h4>
+                
+                <form action="{{ url_for('auth.profile') }}" method="POST">
+                    <input type="hidden" name="action" value="change_password">
+                    
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label text-muted small">Current Password</label>
+                        <input type="password" id="current_password" name="current_password" class="form-control form-control-custom" placeholder="••••••••" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label text-muted small">New Password</label>
+                        <input type="password" id="new_password" name="new_password" class="form-control form-control-custom" placeholder="••••••••" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="confirm_new_password" class="form-label text-muted small">Confirm New Password</label>
+                        <input type="password" id="confirm_new_password" name="confirm_new_password" class="form-control form-control-custom" placeholder="••••••••" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-outline-custom w-100 py-3">Update Account Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

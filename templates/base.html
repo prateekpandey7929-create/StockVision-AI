@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StockVision AI - AI-Powered Smart Stock Forecasting Platform. Predict tomorrow's stock closing prices using machine learning.">
+    <title>{% block title %}StockVision AI - AI-Powered Smart Stock Forecasting Platform{% endblock %}</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=1.2">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.landing') }}">
+                <i class="fa-solid fa-chart-line-up fa-chart-line text-primary me-2 fs-4"></i>
+                <span class="navbar-brand-logo">StockVision AI</span>
+            </a>
+            <button class="navbar-brand navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}" href="{{ url_for('main.dashboard') }}">
+                                <i class="fa-solid fa-gauge me-1"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.watchlist' %}active{% endif %}" href="{{ url_for('main.watchlist') }}">
+                                <i class="fa-solid fa-heart me-1"></i> Watchlist
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.history' %}active{% endif %}" href="{{ url_for('main.history') }}">
+                                <i class="fa-solid fa-clock-rotate-left me-1"></i> Prediction History
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'main.about' %}active{% endif %}" href="{{ url_for('main.about') }}">
+                            <i class="fa-solid fa-circle-info me-1"></i> About
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'main.contact' %}active{% endif %}" href="{{ url_for('main.contact') }}">
+                            <i class="fa-solid fa-envelope me-1"></i> Contact
+                        </a>
+                    </li>
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                        <li class="nav-item">
+                            <a class="nav-link text-warning {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">
+                                <i class="fa-solid fa-user-shield me-1"></i> Admin Panel
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+                
+                <div class="d-flex align-items-center">
+                    {% if current_user.is_authenticated %}
+                        <div class="dropdown">
+                            <button class="btn btn-outline-custom dropdown-toggle d-flex align-items-center" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-user-circle fa-user me-2 fs-5"></i>
+                                {{ current_user.full_name }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark border-secondary bg-dark text-white p-2 mt-2" aria-labelledby="userMenuButton">
+                                <li>
+                                    <a class="dropdown-item rounded py-2" href="{{ url_for('auth.profile') }}">
+                                        <i class="fa-solid fa-id-card me-2 text-primary"></i> My Profile
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider border-secondary"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger rounded py-2" href="{{ url_for('auth.logout') }}">
+                                        <i class="fa-solid fa-sign-out-alt me-2"></i> Sign Out
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-custom me-2 px-4">Sign In</a>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-primary-custom px-4">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Flash Messages -->
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show alert-custom d-flex align-items-center justify-content-between p-3" role="alert">
+                        <div class="d-flex align-items-center">
+                            {% if category == 'success' %}
+                                <i class="fa-solid fa-circle-check text-success me-3 fs-4"></i>
+                            {% elif category == 'danger' or category == 'error' %}
+                                <i class="fa-solid fa-circle-exclamation text-danger me-3 fs-4"></i>
+                            {% elif category == 'warning' %}
+                                <i class="fa-solid fa-triangle-exclamation text-warning me-3 fs-4"></i>
+                            {% else %}
+                                <i class="fa-solid fa-circle-info text-info me-3 fs-4"></i>
+                            {% endif %}
+                            <div>{{ message }}</div>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <!-- Main Content -->
+    <main class="flex-grow-1">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="py-5 text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-chart-line text-primary me-2 fs-4"></i>
+                        <span class="navbar-brand-logo fs-4">StockVision AI</span>
+                    </div>
+                    <p class="text-muted small">
+                        Smart, AI-powered predictive forecasting model for stock market closures. Engineered using modern machine learning libraries.
+                    </p>
+                    <div class="d-flex gap-3 mt-3">
+                        <a href="#" class="text-muted hover-scale"><i class="fa-brands fa-twitter fs-5"></i></a>
+                        <a href="#" class="text-muted hover-scale"><i class="fa-brands fa-github fs-5"></i></a>
+                        <a href="#" class="text-muted hover-scale"><i class="fa-brands fa-linkedin fs-5"></i></a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2 offset-lg-2 mb-3">
+                    <h6 class="outfit-font text-white mb-3">Navigation</h6>
+                    <ul class="list-unstyled text-muted small">
+                        <li class="mb-2"><a href="{{ url_for('main.landing') }}" class="text-muted text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a href="{{ url_for('main.about') }}" class="text-muted text-decoration-none">About AI Model</a></li>
+                        <li class="mb-2"><a href="{{ url_for('main.contact') }}" class="text-muted text-decoration-none">Contact Support</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-2 mb-3">
+                    <h6 class="outfit-font text-white mb-3">Legal</h6>
+                    <ul class="list-unstyled text-muted small">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Terms of Service</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Risk Disclosure</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h6 class="outfit-font text-white mb-3">Quick Search</h6>
+                    <form action="{{ url_for('main.search') }}" method="GET" class="input-group">
+                        <input type="text" name="symbol" class="form-control form-control-custom py-2" placeholder="e.g. AAPL" required>
+                        <button type="submit" class="btn btn-primary-custom px-3"><i class="fa-solid fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-muted small">&copy; 2026 StockVision AI. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+                    <p class="mb-0 text-muted small">
+                        Disclaimer: Predictions are for educational purposes only. Investing involves risk.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

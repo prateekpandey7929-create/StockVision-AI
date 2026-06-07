@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+
+{% block title %}StockVision AI - AI-Powered Smart Stock Forecasting Platform{% endblock %}
+
+{% block content %}
+<div class="position-relative overflow-hidden bg-gradient-radial py-5">
+    <div class="hero-glow"></div>
+    <div class="hero-glow-alt"></div>
+    
+    <div class="container my-5 py-5 position-relative" style="z-index: 1;">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-50 px-3 py-2 rounded-pill mb-3 outfit-font fw-semibold">
+                    <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Next-Gen Prediction Models
+                </div>
+                <h1 class="display-3 fw-extrabold text-white mb-3 text-gradient-primary outfit-font" style="line-height: 1.1;">
+                    Predict Markets with <span class="text-gradient-accent">Machine Learning</span>
+                </h1>
+                <p class="lead text-muted mb-4 fs-5" style="max-width: 500px;">
+                    Make smarter financial research decisions. StockVision AI leverages Random Forest algorithms to analyze historical trends and predict next-day closures.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary-custom px-4 py-3 fs-6 d-flex align-items-center">
+                        <i class="fa-solid fa-arrow-trend-up me-2"></i> Get Started Free
+                    </a>
+                    <a href="#features" class="btn btn-outline-custom px-4 py-3 fs-6">
+                        Explore Features
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <!-- Abstract visual representation of dashboard -->
+                <div class="glass-card p-4 mx-auto" style="max-width: 550px; border-color: rgba(99, 102, 241, 0.2);">
+                    <div class="d-flex align-items-center justify-content-between mb-4 border-bottom border-secondary pb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-success bg-opacity-25 text-success rounded-circle p-2"><i class="fa-solid fa-chart-line fs-5"></i></span>
+                            <div>
+                                <h5 class="mb-0 text-white outfit-font">AAPL Prediction</h5>
+                                <small class="text-muted">Random Forest Regressor</small>
+                            </div>
+                        </div>
+                        <span class="badge-bullish"><i class="fa-solid fa-circle-chevron-up me-1"></i> Bullish</span>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-6 border-end border-secondary border-opacity-50">
+                            <small class="text-muted d-block mb-1 text-uppercase tracking-wider">Current Price</small>
+                            <span class="h3 text-white outfit-font">$182.30</span>
+                        </div>
+                        <div class="col-6 ps-4">
+                            <small class="text-muted d-block mb-1 text-uppercase tracking-wider">Predicted Close</small>
+                            <span class="h3 text-success outfit-font">$186.45</span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 bg-dark bg-opacity-50 rounded border border-secondary border-opacity-30 d-flex justify-content-between align-items-center mb-3">
+                        <span class="small text-muted">Expected Change</span>
+                        <strong class="text-success small outfit-font">+2.28%</strong>
+                    </div>
+                    
+                    <div class="p-3 bg-dark bg-opacity-50 rounded border border-secondary border-opacity-30 d-flex justify-content-between align-items-center">
+                        <span class="small text-muted">Model R² Score</span>
+                        <strong class="text-primary small outfit-font">0.892 (High Accuracy)</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section id="features" class="py-5 bg-dark bg-opacity-50 border-top border-secondary border-opacity-20">
+    <div class="container my-5">
+        <div class="text-center mb-5">
+            <h2 class="display-5 text-white outfit-font mb-3 text-gradient-primary">Core Platform Capabilities</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                Everything you need to run AI-backed quantitative checks, evaluate model accuracy, and maintain a watchlist.
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="glass-card h-100 p-4 hover-scale">
+                    <div class="badge bg-primary bg-opacity-25 p-3 rounded-3 mb-4"><i class="fa-solid fa-brain fs-3 text-primary"></i></div>
+                    <h4 class="text-white mb-3 outfit-font">On-Demand ML Models</h4>
+                    <p class="text-muted">
+                        Enter any valid stock symbol. The app downloads 2 years of daily data and fits a custom Random Forest Regressor on the fly.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card h-100 p-4 hover-scale">
+                    <div class="badge bg-success bg-opacity-25 p-3 rounded-3 mb-4"><i class="fa-solid fa-chart-area fs-3 text-success"></i></div>
+                    <h4 class="text-white mb-3 outfit-font">Validation Insights</h4>
+                    <p class="text-muted">
+                        See R² scores, Mean Absolute Error (MAE), and Root Mean Squared Error (RMSE) metrics calculated from a chronological test set.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card h-100 p-4 hover-scale">
+                    <div class="badge bg-info bg-opacity-25 p-3 rounded-3 mb-4"><i class="fa-solid fa-bell fs-3 text-info"></i></div>
+                    <h4 class="text-white mb-3 outfit-font">Active Watchlists</h4>
+                    <p class="text-muted">
+                        Save ticker symbols to your dashboard to track current prices, daily change percentages, and quickly trigger new predictions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container my-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h2 class="display-5 text-white outfit-font mb-4 text-gradient-primary">How the AI Model Works</h2>
+                <p class="text-muted mb-4">
+                    Our platform utilizes yfinance to fetch active stock records. We engineer features to give our machine learning models predictive capability.
+                </p>
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <span class="badge bg-primary text-white rounded-circle p-2 mt-1 outfit-font" style="width: 2.2rem; height: 2.2rem; display: flex; align-items: center; justify-content: center;">1</span>
+                    <div>
+                        <h5 class="text-white mb-1 outfit-font">Data Collection & Engineering</h5>
+                        <p class="text-muted small">We compute 5, 10, and 20-day Simple Moving Averages, historical closing price lags, spreads, and rolling volatilities.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <span class="badge bg-primary text-white rounded-circle p-2 mt-1 outfit-font" style="width: 2.2rem; height: 2.2rem; display: flex; align-items: center; justify-content: center;">2</span>
+                    <div>
+                        <h5 class="text-white mb-1 outfit-font">Chronological Backtest Splitting</h5>
+                        <p class="text-muted small">We split data sequentially (80% train, 20% test) to prevent data leakage and evaluate the model's performance on unseen chronological events.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start gap-3">
+                    <span class="badge bg-primary text-white rounded-circle p-2 mt-1 outfit-font" style="width: 2.2rem; height: 2.2rem; display: flex; align-items: center; justify-content: center;">3</span>
+                    <div>
+                        <h5 class="text-white mb-1 outfit-font">Ensemble Regressor Fitting</h5>
+                        <p class="text-muted small">A Random Forest Regressor fits decision trees on bagging subsets to output the final expected close, scoring R² accuracy.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 ps-lg-5">
+                <div class="bg-dark bg-opacity-30 p-4 rounded-4 border border-secondary border-opacity-25">
+                    <h4 class="text-white mb-4 outfit-font"><i class="fa-solid fa-list-check text-primary me-2"></i> Engineered ML Features</h4>
+                    <ul class="list-unstyled text-muted small">
+                        <li class="mb-3 d-flex align-items-center gap-2"><i class="fa-solid fa-circle-check text-primary"></i> <span><strong>Open, High, Low, Close, Volume:</strong> Raw current indicators.</span></li>
+                        <li class="mb-3 d-flex align-items-center gap-2"><i class="fa-solid fa-circle-check text-primary"></i> <span><strong>Close Lags (t-1, t-2, t-3):</strong> Captures short-term daily momentum.</span></li>
+                        <li class="mb-3 d-flex align-items-center gap-2"><i class="fa-solid fa-circle-check text-primary"></i> <span><strong>SMAs (5, 10, 20 days):</strong> Calculates rolling support trends.</span></li>
+                        <li class="mb-3 d-flex align-items-center gap-2"><i class="fa-solid fa-circle-check text-primary"></i> <span><strong>High-Low Price Spread:</strong> Tracks daily intraday range.</span></li>
+                        <li class="mb-3 d-flex align-items-center gap-2"><i class="fa-solid fa-circle-check text-primary"></i> <span><strong>Volatility (5 days):</strong> Measures recent risk and spread fluctuations.</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQs Section -->
+<section id="faq" class="py-5 bg-dark bg-opacity-50 border-top border-bottom border-secondary border-opacity-20">
+    <div class="container my-5" style="max-width: 800px;">
+        <div class="text-center mb-5">
+            <h2 class="display-5 text-white outfit-font mb-3 text-gradient-primary">Frequently Asked Questions</h2>
+            <p class="text-muted">Clear details regarding yfinance operations and machine learning limitations.</p>
+        </div>
+        
+        <div class="accordion-custom-item">
+            <h5 class="text-white mb-0 outfit-font d-flex justify-content-between align-items-center">
+                <span>What machine learning model is utilized for stock prediction?</span>
+                <i class="fa-solid fa-chevron-down text-primary small"></i>
+            </h5>
+            <div class="accordion-custom-answer">
+                StockVision AI primarily uses a <strong>Random Forest Regressor</strong>, an ensemble bagging algorithm that aggregates results from 150 decision trees to forecast closing prices. We also train a <strong>Linear Regression</strong> baseline to provide a benchmark comparison for the R² score, MAE, and RMSE metrics.
+            </div>
+        </div>
+        
+        <div class="accordion-custom-item">
+            <h5 class="text-white mb-0 outfit-font d-flex justify-content-between align-items-center">
+                <span>Where does the stock data come from?</span>
+                <i class="fa-solid fa-chevron-down text-primary small"></i>
+            </h5>
+            <div class="accordion-custom-answer">
+                All data is fetched in real-time from the <strong>Yahoo Finance API (yfinance)</strong>. When you search for a stock or run a prediction, the app pulls historical trading session logs (Open, High, Low, Close, Volume) covering the last 2 years.
+            </div>
+        </div>
+        
+        <div class="accordion-custom-item">
+            <h5 class="text-white mb-0 outfit-font d-flex justify-content-between align-items-center">
+                <span>Can I search for international stocks?</span>
+                <i class="fa-solid fa-chevron-down text-primary small"></i>
+            </h5>
+            <div class="accordion-custom-answer">
+                Yes! Any ticker supported by Yahoo Finance can be analyzed. This includes US stocks (e.g. <code>AAPL</code>, <code>TSLA</code>), Indian indices/shares (e.g. <code>RELIANCE.NS</code>, <code>TCS.NS</code>, <code>^NSEI</code>), cryptocurrencies, and other international tickers.
+            </div>
+        </div>
+        
+        <div class="accordion-custom-item">
+            <h5 class="text-white mb-0 outfit-font d-flex justify-content-between align-items-center">
+                <span>Is this financial advice?</span>
+                <i class="fa-solid fa-chevron-down text-primary small"></i>
+            </h5>
+            <div class="accordion-custom-answer">
+                Absolutely not. StockVision AI is an educational tool demonstrating technical indicator integration with scikit-learn models. Financial markets are highly complex and influenced by sentiment, news, macroeconomics, and unpredictable volatility. Never execute real trades based solely on models.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-5 position-relative">
+    <div class="container my-5" style="max-width: 900px;">
+        <div class="glass-card contact-card-glow p-5">
+            <div class="row">
+                <div class="col-md-5 mb-4 mb-md-0">
+                    <h3 class="text-white outfit-font mb-3">Get in Touch</h3>
+                    <p class="text-muted small"> Have feedback or feature recommendations for our prediction pipeline? Submit a message directly to our admin team.</p>
+                    <hr class="border-secondary my-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <i class="fa-solid fa-location-dot text-primary"></i>
+                        <span class="small text-muted">StockVision AI Headquarters, Silicon Valley</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="fa-solid fa-envelope text-primary"></i>
+                        <span class="small text-muted">support@stockvision.ai</span>
+                    </div>
+                </div>
+                
+                <div class="col-md-7 ps-md-4">
+                    <h4 class="text-white mb-4 outfit-font">Send a Message</h4>
+                    <form action="{{ url_for('main.contact') }}" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Full Name</label>
+                            <input type="text" name="name" class="form-control form-control-custom" placeholder="John Doe" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Email Address</label>
+                            <input type="email" name="email" class="form-control form-control-custom" placeholder="john@example.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Subject</label>
+                            <input type="text" name="subject" class="form-control form-control-custom" placeholder="Feedback/Questions" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-muted small">Message</label>
+                            <textarea name="message" rows="4" class="form-control form-control-custom" placeholder="Write your message here..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary-custom w-100 py-3">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
