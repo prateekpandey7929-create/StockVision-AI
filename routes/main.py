@@ -5,6 +5,27 @@ from ml.predictor import StockPredictor
 import yfinance as yf
 from datetime import datetime
 import pandas as pd
+import requests
+
+CURRENCY_SYMBOLS = {
+    'USD': '$',
+    'INR': '₹',
+    'EUR': '€',
+    'GBP': '£',
+    'JPY': '¥',
+    'AUD': 'A$',
+    'CAD': 'C$',
+    'SGD': 'S$',
+    'CHF': 'CHF',
+    'CNY': '¥'
+}
+
+def get_currency_symbol(ticker_obj):
+    try:
+        currency = ticker_obj.fast_info.currency
+        return CURRENCY_SYMBOLS.get(currency, '$') if currency else '$'
+    except Exception:
+        return '$'
 
 main_bp = Blueprint('main', __name__)
 
@@ -30,19 +51,23 @@ def fetch_market_indices():
                 prev_price = hist['Close'].iloc[-2]
                 change = current_price - prev_price
                 pct_change = (change / prev_price) * 100.0
+                curr_sym = get_currency_symbol(ticker)
                 data[name] = {
                     'price': round(current_price, 2),
                     'change': round(change, 2),
                     'pct_change': round(pct_change, 2),
-                    'symbol': sym
+                    'symbol': sym,
+                    'curr': curr_sym
                 }
             elif not hist.empty:
                 current_price = hist['Close'].iloc[-1]
+                curr_sym = get_currency_symbol(ticker)
                 data[name] = {
                     'price': round(current_price, 2),
                     'change': 0.0,
                     'pct_change': 0.0,
-                    'symbol': sym
+                    'symbol': sym,
+                    'curr': curr_sym
                 }
             else:
                 data[name] = {'price': 'N/A', 'change': 0.0, 'pct_change': 0.0, 'symbol': sym}
@@ -80,25 +105,29 @@ def dashboard():
                 open_price = hist['Open'].iloc[-1]
                 change = current_price - open_price
                 pct_change = (change / open_price) * 100.0 if open_price > 0 else 0.0
+                curr_sym = get_currency_symbol(ticker)
                 watchlist_data.append({
                     'symbol': item.stock_symbol,
                     'price': round(current_price, 2),
                     'change': round(change, 2),
-                    'pct_change': round(pct_change, 2)
+                    'pct_change': round(pct_change, 2),
+                    'curr': curr_sym
                 })
             else:
                 watchlist_data.append({
                     'symbol': item.stock_symbol,
                     'price': 'N/A',
                     'change': 0.0,
-                    'pct_change': 0.0
+                    'pct_change': 0.0,
+                    'curr': '$'
                 })
         except Exception:
             watchlist_data.append({
                 'symbol': item.stock_symbol,
                 'price': 'Error',
                 'change': 0.0,
-                'pct_change': 0.0
+                'pct_change': 0.0,
+                'curr': '$'
             })
             
     # 3. Recent Predictions (last 5 predictions of this user)
@@ -115,16 +144,18 @@ def dashboard():
             hist = ticker.history(period='1d')
             if not hist.empty:
                 current_price = hist['Close'].iloc[-1]
+                curr_sym = get_currency_symbol(ticker)
                 trending_data.append({
                     'symbol': sym,
-                    'price': round(current_price, 2)
+                    'price': round(current_price, 2),
+                    'curr': curr_sym
                 })
         except Exception:
-            trending_data.append({'symbol': sym, 'price': 'N/A'})
+            trending_data.append({'symbol': sym, 'price': 'N/A', 'curr': '$'})
             
     # Add rest without fetching to save API load time
     for sym in trending_symbols[4:]:
-        trending_data.append({'symbol': sym, 'price': 'View Info'})
+        trending_data.append({'symbol': sym, 'price': 'View Info', 'curr': ''})
 
     return render_template('dashboard.html', 
                            market_data=market_data, 
@@ -174,6 +205,7 @@ def search():
         
         # Check if in watchlist
         in_watchlist = Watchlist.query.filter_by(user_id=current_user.id, stock_symbol=symbol).first() is not None
+        curr_sym = get_currency_symbol(ticker)
         
         stock_details = {
             'symbol': symbol,
@@ -184,7 +216,8 @@ def search():
             'low': round(low_price, 2),
             'volume': f"{volume:,}",
             'market_cap': market_cap,
-            'in_watchlist': in_watchlist
+            'in_watchlist': in_watchlist,
+            'curr': curr_sym
         }
         
         return render_template('stock_detail.html', stock=stock_details)
@@ -225,12 +258,14 @@ def predict(ticker):
             company_name = ticker
             
         in_watchlist = Watchlist.query.filter_by(user_id=current_user.id, stock_symbol=ticker).first() is not None
+        curr_sym = get_currency_symbol(t_info)
         
         stock_details = {
             'symbol': ticker,
             'name': company_name,
             'price': pred_res['current_price'],
-            'in_watchlist': in_watchlist
+            'in_watchlist': in_watchlist,
+            'curr': curr_sym
         }
         
         return render_template('stock_detail.html', 
@@ -340,13 +375,15 @@ def watchlist():
                     name = ticker.info.get('longName', item.stock_symbol)
                 except Exception:
                     name = item.stock_symbol
+                curr_sym = get_currency_symbol(ticker)
                     
                 watchlist_data.append({
                     'symbol': item.stock_symbol,
                     'name': name,
                     'price': round(current_price, 2),
                     'change': round(change, 2),
-                    'pct_change': round(pct_change, 2)
+                    'pct_change': round(pct_change, 2),
+                    'curr': curr_sym
                 })
             else:
                 watchlist_data.append({
@@ -354,7 +391,8 @@ def watchlist():
                     'name': item.stock_symbol,
                     'price': 'N/A',
                     'change': 0.0,
-                    'pct_change': 0.0
+                    'pct_change': 0.0,
+                    'curr': '$'
                 })
         except Exception:
             watchlist_data.append({
@@ -362,7 +400,8 @@ def watchlist():
                 'name': item.stock_symbol,
                 'price': 'Error',
                 'change': 0.0,
-                'pct_change': 0.0
+                'pct_change': 0.0,
+                'curr': '$'
             })
             
     return render_template('watchlist.html', watchlist=watchlist_data)
@@ -421,3 +460,26 @@ def contact():
 @main_bp.route('/about')
 def about():
     return render_template('about.html')
+
+@main_bp.route('/api/autocomplete')
+def autocomplete():
+    q = request.args.get('q', '').strip()
+    if not q:
+        return jsonify([])
+    try:
+        url = f"https://query2.finance.yahoo.com/v1/finance/search?q={q}"
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        r = requests.get(url, headers=headers, timeout=3)
+        data = r.json()
+        quotes = data.get('quotes', [])
+        results = []
+        for quote in quotes:
+            if 'quoteType' in quote and quote['quoteType'] in ['EQUITY', 'ETF', 'MUTUALFUND', 'INDEX']:
+                results.append({
+                    'symbol': quote.get('symbol'),
+                    'name': quote.get('shortname', quote.get('longname', quote.get('symbol')))
+                })
+        return jsonify(results)
+    except Exception:
+        return jsonify([])
+

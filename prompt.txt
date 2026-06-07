@@ -1,0 +1,510 @@
+Build a complete, production-ready AI-powered stock prediction web application named **StockVision AI**.
+
+## Project Goal
+
+Develop a fully functional web platform that predicts real stock prices using machine learning and displays stock analytics through a professional dashboard.
+
+The project must use only free and open-source technologies and APIs.
+
+---
+
+## Tech Stack
+
+Backend:
+
+* Python 3.10+
+* Flask
+* SQLAlchemy
+* SQLite (default database)
+
+Machine Learning:
+
+* Pandas
+* NumPy
+* Scikit-learn
+* Joblib
+* yfinance
+
+Frontend:
+
+* HTML5
+* CSS3
+* JavaScript
+* Bootstrap 5
+
+Charts:
+
+* Chart.js
+
+Development Environment:
+
+* WSL (Ubuntu)
+* VS Code
+
+Version Control:
+
+* Git
+
+---
+
+## Project Name
+
+StockVision AI
+
+Tagline:
+
+"AI-Powered Smart Stock Forecasting Platform"
+
+---
+
+## Core Requirements
+
+Create a complete end-to-end stock prediction platform.
+
+The application should be fully functional.
+
+Every page must be connected.
+
+Every button must work.
+
+No placeholder pages.
+
+No dummy functionality.
+
+No broken links.
+
+No incomplete features.
+
+The project should be ready to run after installation.
+
+---
+
+## Authentication System
+
+Implement:
+
+### User Registration
+
+Fields:
+
+* Full Name
+* Email
+* Password
+* Confirm Password
+
+### User Login
+
+* Secure login
+* Password hashing
+* Session management
+
+### Logout
+
+Working logout functionality.
+
+---
+
+## Landing Page
+
+Professional modern UI.
+
+Sections:
+
+* Hero Section
+* Features
+* About Platform
+* How It Works
+* Benefits
+* FAQs
+* Contact
+
+Include:
+
+* Responsive Navbar
+* Footer
+* Login Button
+* Register Button
+
+---
+
+## Dashboard
+
+After login redirect user to Dashboard.
+
+Dashboard should show:
+
+* Welcome Card
+* Market Summary
+* Recent Predictions
+* Prediction History
+* Trending Stocks
+
+Professional dashboard layout.
+
+---
+
+## Stock Search Feature
+
+User should be able to search stocks.
+
+Examples:
+
+* AAPL
+* TSLA
+* MSFT
+* GOOGL
+* META
+* AMZN
+* NFLX
+* RELIANCE.NS
+* TCS.NS
+* INFY.NS
+
+Use yfinance API.
+
+Fetch:
+
+* Current Price
+* Open
+* High
+* Low
+* Volume
+* Market Cap
+
+Display in cards.
+
+---
+
+## Historical Data Module
+
+Allow user to select:
+
+* 1 Month
+* 3 Months
+* 6 Months
+* 1 Year
+* 5 Years
+
+Fetch historical stock data.
+
+Display:
+
+* Price Charts
+* Trend Charts
+
+Use Chart.js.
+
+---
+
+## Machine Learning Model
+
+Create a complete training pipeline.
+
+Use:
+
+* Historical Stock Data
+* Feature Engineering
+
+Features:
+
+* Open
+* High
+* Low
+* Close
+* Volume
+
+Target:
+
+* Next Day Closing Price
+
+Model:
+
+Primary:
+
+* Random Forest Regressor
+
+Optional:
+
+* Linear Regression comparison
+
+Training Pipeline:
+
+* Data Collection
+* Cleaning
+* Feature Engineering
+* Train Test Split
+* Training
+* Evaluation
+* Model Saving
+
+Use Joblib.
+
+Store trained model inside:
+
+```text
+models/
+```
+
+---
+
+## Prediction Module
+
+User selects stock.
+
+System predicts:
+
+* Next Day Price
+
+Display:
+
+Current Price
+
+Predicted Price
+
+Expected Change %
+
+Bullish/Bearish Signal
+
+Confidence Score
+
+Prediction Date
+
+---
+
+## Model Performance Page
+
+Display:
+
+* MAE
+* RMSE
+* R² Score
+
+Charts:
+
+* Actual vs Predicted
+
+Model statistics should be generated from real evaluation.
+
+---
+
+## Prediction History
+
+Store all user predictions.
+
+Database fields:
+
+* User
+* Stock
+* Date
+* Current Price
+* Predicted Price
+* Signal
+
+Display in table.
+
+Provide:
+
+* Search
+* Filter
+* Pagination
+
+---
+
+## Watchlist Feature
+
+Allow users to:
+
+* Add Stocks
+* Remove Stocks
+
+Display all saved stocks.
+
+Store in database.
+
+---
+
+## Profile Page
+
+Display:
+
+* Name
+* Email
+* Join Date
+
+Allow:
+
+* Update Profile
+* Change Password
+
+---
+
+## Contact Page
+
+Working contact form.
+
+Store messages in database.
+
+Admin should be able to view messages.
+
+---
+
+## About Page
+
+Professional About section explaining:
+
+* Platform
+* AI Model
+* Features
+* Technologies Used
+
+---
+
+## Admin Panel
+
+Admin Dashboard:
+
+View:
+
+* Users
+* Predictions
+* Contact Messages
+* Watchlists
+
+Admin login must work.
+
+---
+
+## UI Requirements
+
+Design must look like a modern fintech platform.
+
+Use:
+
+* Bootstrap 5
+* Cards
+* Gradients
+* Professional Icons
+* Animations
+* Responsive Layout
+
+Must work on:
+
+* Desktop
+* Tablet
+* Mobile
+
+Avoid plain college-project UI.
+
+The design should look similar to modern SaaS products.
+
+---
+
+## Folder Structure
+
+Generate a professional folder structure:
+
+```text
+StockVisionAI/
+│
+├── app.py
+├── requirements.txt
+├── config.py
+│
+├── models/
+├── static/
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+├── templates/
+│
+├── database/
+│
+├── ml/
+│   ├── train_model.py
+│   ├── predictor.py
+│
+├── routes/
+│
+├── utils/
+│
+└── README.md
+```
+
+---
+
+## Database
+
+Use SQLite.
+
+Create proper models for:
+
+* Users
+* Predictions
+* Watchlist
+* Contact Messages
+
+---
+
+## Security
+
+Implement:
+
+* Password Hashing
+* CSRF Protection
+* Form Validation
+* Session Handling
+
+---
+
+## README
+
+Generate complete README including:
+
+* Features
+* Installation
+* Project Structure
+* Screenshots Section
+* WSL Commands
+* Run Instructions
+
+---
+
+## WSL Commands
+
+Provide complete commands:
+
+```bash
+sudo apt update
+sudo apt install python3 python3-pip python3-venv
+
+python3 -m venv venv
+
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+python app.py
+```
+
+---
+
+## Final Requirement
+
+Generate all source code files completely.
+
+Do not leave placeholders.
+
+Do not leave TODO comments.
+
+Every route, template, database model, ML model, and page must be fully implemented.
+
+All pages must be connected and functional.
+
+The project should run successfully after following the README instructions.
+
+Use only free APIs and open-source libraries.
+
+
+isme purana data wagera alekr model barabar train krna aur sahi predict krne ki try krna. aur free me au r commands wsl ki use se krnaa aur sari files proper banana aur ek pura iska structure ka doc bhi tayra krna
+

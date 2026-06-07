@@ -20,7 +20,7 @@
             <div class="d-flex align-items-center gap-3">
                 <div class="text-end">
                     <small class="text-muted d-block mb-1 text-uppercase tracking-wider">Current Price</small>
-                    <span class="h3 text-white outfit-font">${{ stock.price }}</span>
+                    <span class="h3 text-white outfit-font">{{ stock.curr }}{{ stock.price }}</span>
                 </div>
                 
                 {% if stock.in_watchlist %}
@@ -52,7 +52,7 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="p-3 bg-dark bg-opacity-40 rounded border border-secondary border-opacity-30 h-100">
                         <small class="text-muted d-block mb-1 text-uppercase tracking-wider">Next-Day Price</small>
-                        <span class="h3 text-white outfit-font">${{ prediction.predicted_price }}</span>
+                        <span class="h3 text-white outfit-font">{{ stock.curr }}{{ prediction.predicted_price }}</span>
                     </div>
                 </div>
                 
@@ -102,21 +102,21 @@
             <div class="col-6 col-md-4 col-lg-2">
                 <div class="glass-card p-3 text-center">
                     <small class="text-muted d-block mb-1">Open</small>
-                    <span class="h5 text-white font-monospace">${{ stock.open }}</span>
+                    <span class="h5 text-white font-monospace">{{ stock.curr }}{{ stock.open }}</span>
                 </div>
             </div>
             <!-- High -->
             <div class="col-6 col-md-4 col-lg-2">
                 <div class="glass-card p-3 text-center">
                     <small class="text-muted d-block mb-1">High</small>
-                    <span class="h5 text-white font-monospace text-success">${{ stock.high }}</span>
+                    <span class="h5 text-white font-monospace text-success">{{ stock.curr }}{{ stock.high }}</span>
                 </div>
             </div>
             <!-- Low -->
             <div class="col-6 col-md-4 col-lg-2">
                 <div class="glass-card p-3 text-center">
                     <small class="text-muted d-block mb-1">Low</small>
-                    <span class="h5 text-white font-monospace text-danger">${{ stock.low }}</span>
+                    <span class="h5 text-white font-monospace text-danger">{{ stock.curr }}{{ stock.low }}</span>
                 </div>
             </div>
             <!-- Volume -->
@@ -215,13 +215,13 @@
                                         </tr>
                                         <tr>
                                             <td><strong class="text-white small">MAE (Mean Abs Error)</strong></td>
-                                            <td class="text-end text-primary font-monospace small">${{ prediction.metrics.rf.mae|round(2) }}</td>
-                                            <td class="text-end text-muted font-monospace small">${{ prediction.metrics.lr.mae|round(2) }}</td>
+                                            <td class="text-end text-primary font-monospace small">{{ stock.curr }}{{ prediction.metrics.rf.mae|round(2) }}</td>
+                                            <td class="text-end text-muted font-monospace small">{{ stock.curr }}{{ prediction.metrics.lr.mae|round(2) }}</td>
                                         </tr>
                                         <tr>
                                             <td><strong class="text-white small">RMSE (Root MSE)</strong></td>
-                                            <td class="text-end text-primary font-monospace small">${{ prediction.metrics.rf.rmse|round(2) }}</td>
-                                            <td class="text-end text-muted font-monospace small">${{ prediction.metrics.lr.rmse|round(2) }}</td>
+                                            <td class="text-end text-primary font-monospace small">{{ stock.curr }}{{ prediction.metrics.rf.rmse|round(2) }}</td>
+                                            <td class="text-end text-muted font-monospace small">{{ stock.curr }}{{ prediction.metrics.lr.rmse|round(2) }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
