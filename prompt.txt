@@ -541,3 +541,101 @@ dekho on demand sare bdi choti company ke liye stock ki price predict kre aur ek
 
 9.
 dekho isme ek dikkat aa rhi h ki price sirf dollar me bata rha h aur yahoo. finance me jo price rupee me h woh isdhr dollar me baata rha h aur isko proper currencies me shi price aaye shi currency ke sath aur search kene pr neeche option de jese ki i likhu toh itc aur sare top aa jaye esa kuch 
+
+
+10.
+Mere GitHub repository ko deploy karo aur mujhe free professional domain do.
+
+## Project Information
+
+* Project Name: Stock Vision AI
+* Hosting: Free
+* Domain: Free
+* SSL: Free
+* Total Cost: ₹0
+
+## Hosting Requirements
+
+1. Project ko GitHub repository se deploy karo.
+2. Agar frontend hai to Vercel use karo.
+3. Agar Flask backend hai to Render use karo.
+4. Deployment fully working hona chahiye.
+5. Production mode me run hona chahiye.
+6. Sab routes, APIs aur pages test karo.
+
+## Free Domain Requirements
+
+1. Mere liye available subdomain check karo:
+
+   * stockvision.is-a.dev
+   * stockvisionai.is-a.dev
+   * prateek.is-a.dev
+
+2. Available domain select karo.
+
+3. is-a.dev domain registration process complete karo:
+
+   * is-a-dev/register repository fork karo.
+   * domains folder me JSON file create karo.
+   * Correct DNS records add karo.
+   * Pull Request create karo.
+   * PR template complete karo.
+   * Website preview attach karo.
+
+4. Domain configuration:
+
+For Vercel:
+
+```json
+{
+  "owner": {
+    "username": "MY_GITHUB_USERNAME"
+  },
+  "records": {
+    "CNAME": "cname.vercel-dns.com"
+  }
+}
+```
+
+For Render:
+
+```json
+{
+  "owner": {
+    "username": "MY_GITHUB_USERNAME"
+  },
+  "records": {
+    "CNAME": "MY_RENDER_URL.onrender.com"
+  }
+}
+```
+
+## After PR Approval
+
+1. Custom domain add karo.
+2. SSL enable karo.
+3. HTTPS force karo.
+4. Domain verification complete karo.
+5. Final website check karo.
+
+## Final Deliverables
+
+Mujhe provide karo:
+
+* Live website URL
+* GitHub URL
+* is-a.dev domain URL
+* Deployment screenshots
+* PR link
+* Domain status
+* SSL status
+
+Goal:
+
+[https://stockvision.is-a.dev](https://stockvision.is-a.dev)
+
+or
+
+[https://stockvisionai.is-a.dev](https://stockvisionai.is-a.dev)
+
+fully working with zero cost.

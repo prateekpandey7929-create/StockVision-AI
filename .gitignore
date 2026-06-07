@@ -2,17 +2,25 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
 
 # Environments
 venv/
 ENV/
 env/
 .env
+.env.*
+!.env.example
 
 # Database files
 database/*.db
+stockvision.db
+*.db
 *.sqlite3
 
-# OS files
+# IDE and system files
+.vscode/
+.idea/
+.pytest_cache/
 .DS_Store
 Thumbs.db
