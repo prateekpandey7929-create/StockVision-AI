@@ -508,3 +508,36 @@ Use only free APIs and open-source libraries.
 
 isme purana data wagera alekr model barabar train krna aur sahi predict krne ki try krna. aur free me au r commands wsl ki use se krnaa aur sari files proper banana aur ek pura iska structure ka doc bhi tayra krna
 
+
+
+2.
+completed or remaining 
+
+
+3.
+dekho me ish project ko aabhi baad me git pr push krke vercel pr deploy kruga toh ush acc krna aur make sure do not use any paid version 
+
+
+4.
+isme templatees pr stock detail pr kuch error h check it correct it and run and give me link 
+
+
+5.
+use google stich and make professional responsive and consisitent ui 
+
+
+6.
+ui change nhi huva iska background light color me rkhna 
+
+
+7.
+isme sare stock ka data daal skte h kyaa free me 
+
+
+
+8.
+dekho on demand sare bdi choti company ke liye stock ki price predict kre aur ek graph bhi de analysisi ka aur proper ui ke sath consistent aur changes git pr puch kr dena aur 
+
+
+9.
+dekho isme ek dikkat aa rhi h ki price sirf dollar me bata rha h aur yahoo. finance me jo price rupee me h woh isdhr dollar me baata rha h aur isko proper currencies me shi price aaye shi currency ke sath aur search kene pr neeche option de jese ki i likhu toh itc aur sare top aa jaye esa kuch 
